@@ -30,7 +30,6 @@ public class Bomb extends Actor
         
         //System.out.println(tick+" - "+startTick);
         if (tick-startTick>=48) {
-            int fuckJava = 0;
             getWorld().removeObjects(getIntersectingObjects(Block.class));
             getWorld().removeObject(this);
             
