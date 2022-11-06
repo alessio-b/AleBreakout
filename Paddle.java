@@ -26,24 +26,18 @@ public class Paddle extends Actor
      */
     public void act() 
     {
-        if (Greenfoot.isKeyDown ("left")) {
-            move(-9);
+        MouseInfo mouse = Greenfoot.getMouseInfo();
+        if (mouse != null) {
+            setLocation(mouse.getX(), getY());
+            if (myBall != null) {
+                myBall.move(mouse.getX()-myBall.getX());
+            }
         }
-        if (Greenfoot.isKeyDown ("right")) {
-            move(9);
-        }
+   
         if (haveBall() && Greenfoot.isKeyDown ("space")) {
             releaseBall();
         }
         
-    }
-    
-    public void move(int dist)
-    {
-        setLocation (getX() + dist, getY());
-        if (myBall != null) {
-            myBall.move (dist);
-        }
     }
     
     public void newBall()

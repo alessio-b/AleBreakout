@@ -37,5 +37,9 @@ public class Block extends Actor
         if (tick%6 == 0) {
             setLocation (getX(), getY() + speed);
         }
+        
+        if (getY() >= 760) {
+            getWorld().removeObjects(getWorld().getObjects(Block.class));
+        }
     }
 }

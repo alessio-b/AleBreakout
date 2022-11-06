@@ -24,7 +24,7 @@ public class Ball extends Actor
         if (!stuck) 
         {
             move();
-            makeSmoke();
+            //makeSmoke();
             checkCollision();
             checkOut();
         }
@@ -70,13 +70,13 @@ public class Ball extends Actor
     private void checkCollision() {
         Block block = (Block) getOneIntersectingObject(Block.class);
         if (block != null) {
+            deltaY = -deltaY;
             if (block.type == "bomb") {
                 bomb = new Bomb();
                 getWorld().addObject( bomb, block.getX(), block.getY());
                 bomb.setTick();
             }
             getWorld().removeObject(block);
-            deltaY = -deltaY;
         }
     }
     

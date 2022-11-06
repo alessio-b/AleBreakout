@@ -21,24 +21,23 @@ public class Bomb extends Actor
         int tick = ((Board) getWorld()).tick;
         int speed = ((Board) getWorld()).speed;
         
-        if (tick%6== 0) {
+        if (tick%7== 0) {
             setLocation (getX(), getY() + speed);
         }
         if ((tick-startTick)%4==0) {
             image.scale((int)(image.getWidth()*1.3), (int)(image.getHeight()*1.3));
         }
         
-        //System.out.println(tick+" "+startTick);
-        if (tick-startTick>=36) {
-            for (Block block : getIntersectingObjects(Block.class)) {
-                getWorld().removeObject(block);
-            }
+        //System.out.println(tick+" - "+startTick);
+        if (tick-startTick>=48) {
+            int fuckJava = 0;
+            getWorld().removeObjects(getIntersectingObjects(Block.class));
             getWorld().removeObject(this);
             
         }
     }
     public void setTick() {
         startTick = ((Board) getWorld()).tick;
-        System.out.println(startTick);
+        //System.out.println(startTick);
     }
 }
