@@ -30,9 +30,12 @@ public class Bomb extends Actor
         
         //System.out.println(tick+" - "+startTick);
         if (tick-startTick>=48) {
-            getWorld().removeObjects(getIntersectingObjects(Block.class));
+            for (Block block: this.getIntersectingObjects(Block.class)) {
+                block.hit("bomb");
+                System.out.println("Fired");
+            }
+            System.out.println("^^^^");
             getWorld().removeObject(this);
-            
         }
     }
     public void setTick() {

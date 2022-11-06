@@ -8,11 +8,10 @@ import greenfoot.*;
  */
 public class Board extends World
 {
-    private Paddle paddle;
-    private Block block;
-    public int blockCount;
+    public int score = 0;
     public int tick = 1;
     public int speed = 1; 
+    public int damage = 1;
     
     /**
      * Konstruktor für Objekte der Klasse Board.
@@ -25,29 +24,29 @@ public class Board extends World
         
         speed = 1;
         
-        paddle = new Paddle();
+        Paddle paddle = new Paddle();
         addObject ( paddle, getWidth() / 2, getHeight() - 40);
+        paddle.newBall();
     }
     
     public void act() {
         tick++;
         if (tick%192==0) {
-            genBlocks(16);   
+            genBlocks();   
         }
     }
     
-    public void ballIsOut()
-    {
-        paddle.newBall();
-    }
-    
-    public boolean genBlocks(int blocksWidth) {
-        for (int i=0; i<getWidth()/(blocksWidth*1.5);i++) {
-            blockCount++;
-            block = new Block( blocksWidth, blocksWidth);
-            int coordx = (int)(i*(blocksWidth*1.5)+(blocksWidth*0.75));
+    public boolean genBlocks() {
+        for (int i=0; i<getWidth()/(16*1.5);i++) {
+            Block block = new Block();
+            int coordx = (int)(i*(16*1.5)+(16*0.75));
             addObject(block, coordx, -1);
         }
         return true;
     }
+    
+    public void addScore(int amount) {
+        score += amount;
+        System.out.println(score);
+    } 
 }

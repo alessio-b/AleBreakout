@@ -7,9 +7,7 @@ import greenfoot.*;
  * @version 1.0
  */
 public class Ball extends Actor
-{
-    private Bomb bomb;
-    
+{   
     private int deltaX;         // Geschwindigkeit der x-Bewegung
     private int deltaY;         // Geschwindigkeit der y-Bewegung
     private int count = 2;
@@ -19,64 +17,43 @@ public class Ball extends Actor
     /**
      * Aktion. Der Ball bewegt sich, wenn er nicht auf dem Schläger liegt.
      */
+    public Ball() {
+        GreenfootImage image = new  GreenfootImage("ball.png");
+        image.scale(16,16);
+        setImage(image);
+    }
+    
     public void act() 
     {
+        int tick = ((Board) getWorld()).tick;
         if (!stuck) 
         {
-            move();
-            //makeSmoke();
-            checkCollision();
-            checkOut();
-        }
-    }
-    
-    /**
-     * Bewegt den Ball. Prüft, was wir getroffen haben.
-     */
-    public void move()
-    {
-        setLocation (getX() + deltaX, getY() + deltaY);
-        checkPaddle();
-        checkWalls();
-    }
-    
-    /**
-     * Prüft, ob wir eine der drei Wände getroffen haben. Im Bedarfsfall Richtung umkehren.
-     */
-    private void checkWalls()
-    {
-        if (getX() == 0 || getX() == getWorld().getWidth()-1) {
-            deltaX = -deltaX;
-        }
-        if (getY() == 0) {
-            deltaY = -deltaY;
-        }
-    }
-    
-    /**
-     * Prüft, ob der Ball ins Aus gegangen ist (Boden des Bildschirm).
-     */
-    private void checkOut()
-    {
-        if (getY()+1 == getWorld().getHeight()) {
-            ((Board) getWorld()).ballIsOut();
-            getWorld().removeObject(this);
-        }
-    }
-    
-    /**
-     * Prüft ob der Ball mit Block kollidiert.
-     */
-    private void checkCollision() {
-        Block block = (Block) getOneIntersectingObject(Block.class);
-        if (block != null) {
-            deltaY = -deltaY;
-            if (block.type == "bomb") {
-                bomb = new Bomb();
-                getWorld().addObject( bomb, block.getX(), block.getY());
-                bomb.setTick();
+            setLocation (getX() + deltaX, getY() + deltaY);;
+            checkPaddle();
+            
+            // Check Walls
+            if (getX() == 0 || getX() == getWorld().getWidth()-1) {
+                deltaX = -deltaX;
             }
-            getWorld().removeObject(block);
+            if (getY() == 0) {
+                deltaY = -deltaY;
+            }
+            if (tick%2==0 && false) {
+                getWorld().addObject ( new Smoke(), getX(), getY());
+            }
+            
+            // Check Blocks
+            Block block = (Block) getOneIntersectingObject(Block.class);
+            if (block != null) {
+                deltaY = -deltaY;
+                block.hit();
+            }
+            
+            //Check Out
+            if (getY()+1 == getWorld().getHeight()) {
+                (getWorld().getObjects(Paddle.class).get(0)).newBall();
+                getWorld().removeObject(this);
+            }
         }
     }
     
@@ -94,26 +71,6 @@ public class Ball extends Actor
                 deltaX = -7;
             }
         }            
-    }
-    
-    /**
-     * Bewegt den Ball um einen gegebenen Betrag zur Seite.
-     */
-    public void move(int dist)
-    {
-        setLocation (getX() + dist, getY());
-    }
-
-    /**
-     * Gibt eine Rauchwolke aus (nur bei jedem zweiten Aufruf).
-     */
-    private void makeSmoke()
-    {
-        count--;
-        if (count == 0) {
-            getWorld().addObject ( new Smoke(), getX(), getY());
-            count = 2;
-        }
     }
     
     /**

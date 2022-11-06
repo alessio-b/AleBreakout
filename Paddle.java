@@ -10,51 +10,49 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Paddle extends Actor
 {
     private Ball myBall;  // wird vor dem Ballanschlag verwendet
-    private int BallCount;
-
-    /**
-     * Wenn der Schläger erzeugt wird, wird auch ein Ball erzeugt.
-     */
-    public void addedToWorld(World world)
-    {
-        newBall();
-    }
     
-    /**
-     * Agiere - tue, was immer der Schläger so tun möchte. Diese Methode wird immer dann aufgerufen,
-     * wenn in der Umgebung der Button 'Act' oder 'Run' gedrückt wird.
-     */
+    private int BallCount;
+    private int laserTimer;
+    
     public void act() 
     {
         MouseInfo mouse = Greenfoot.getMouseInfo();
         if (mouse != null) {
             setLocation(mouse.getX(), getY());
             if (myBall != null) {
-                myBall.move(mouse.getX()-myBall.getX());
+                myBall.setLocation(mouse.getX(), myBall.getY());
             }
         }
+        
+        if (isTouching(Upgrade.class)) {
+            Actor upgrade = getOneIntersectingObject(Upgrade.class);
+            if( ((Upgrade) upgrade).upgradeType == "laser") {
+                laserTimer += 300;
+            }
+            getWorld().removeObject(upgrade);
+        }
    
-        if (haveBall() && Greenfoot.isKeyDown ("space")) {
-            releaseBall();
+        if (laserTimer > 1) {
+            laserTimer--;
+            if (laserTimer%30==0) {
+                Laser laser = new Laser();
+                getWorld().addObject( laser, getX()+20, getY() - 4);
+                Laser laser2 = new Laser();
+                getWorld().addObject( laser2, getX()-20, getY() - 4);
+            }
+        }
+        
+        if (myBall != null && Greenfoot.isKeyDown ("space")) {
+            myBall.release();
+            myBall = null;
         }
         
     }
     
     public void newBall()
     {
+        BallCount++;
         myBall = new Ball();
         getWorld().addObject (myBall, getX(), getY()-20);
-    }
-        
-    public boolean haveBall()
-    {
-        return myBall != null;
-    }
-        
-    public void releaseBall()
-    {
-        myBall.release();
-        myBall = null;
-    }
-        
+    }    
 }
