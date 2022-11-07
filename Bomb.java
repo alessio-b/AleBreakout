@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.List;
 
 /**
  * Write a description of class bomb here.
@@ -9,11 +10,12 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Bomb extends Actor
 {
     private int startTick;
-    private GreenfootImage image = getImage();
+    private GreenfootImage image;
     
     public Bomb() {
+        setImage("bomb.png");
+        image = getImage();
         image.scale(16,16);
-        setImage(image);
     }
     
     public void act()
@@ -30,11 +32,11 @@ public class Bomb extends Actor
         
         //System.out.println(tick+" - "+startTick);
         if (tick-startTick>=48) {
-            for (Block block: this.getIntersectingObjects(Block.class)) {
+            List<Block> inflictedBlocks = this.getIntersectingObjects(Block.class); 
+            System.out.println(inflictedBlocks);
+            for (Block block: inflictedBlocks) {
                 block.hit("bomb");
-                System.out.println("Fired");
             }
-            System.out.println("^^^^");
             getWorld().removeObject(this);
         }
     }

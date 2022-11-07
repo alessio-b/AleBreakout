@@ -21,20 +21,21 @@ public class Block extends Actor
         if (rand <= 20) {
                 image.setColor(new Color(0, 0, 255));
                 health = 1;
-                type = "laser";
+                this.type = "laser";
         } else if (rand <= 40) {
                 image.setColor(new Color(0, 0, 0));
                 health = 1;
-                type = "bomb";
+                this.type = "bomb";
         } else if (rand <= 60) {
                 image.setColor(new Color(0, 255, 0));
                 health = 2;
-                type = "double";
+                this.type = "double";
         } else {
                 image.setColor(new Color(255, 0, 0));
                 health = 1;
-                type = "normal";
+                this.type = "normal";
         }
+        //System.out.println(type);
         image.drawRect(0, 0, 100, 100);
         image.fill();
         setImage(image);
