@@ -15,7 +15,6 @@ public class Bomb extends Actor
     public Bomb() {
         setImage("bomb.png");
         image = getImage();
-        image.scale(16,16);
     }
     
     public void act()
@@ -27,14 +26,12 @@ public class Bomb extends Actor
             setLocation (getX(), getY() + speed);
         }
         if ((tick-startTick)%4==0) {
-            image.scale((int)(image.getWidth()*1.3), (int)(image.getHeight()*1.3));
+            image.scale((int)(image.getWidth()*1.1), (int)(image.getHeight()*1.1));
         }
         
         //System.out.println(tick+" - "+startTick);
         if (tick-startTick>=48) {
-            List<Block> inflictedBlocks = this.getIntersectingObjects(Block.class); 
-            System.out.println(inflictedBlocks);
-            for (Block block: inflictedBlocks) {
+            for (Block block: getIntersectingObjects(Block.class)) {
                 block.hit("bomb");
             }
             getWorld().removeObject(this);

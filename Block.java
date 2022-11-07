@@ -18,15 +18,15 @@ public class Block extends Actor
     public Block() {
         
         int rand = Greenfoot.getRandomNumber(100);
-        if (rand <= 20) {
+        if (rand <= 5) {
                 image.setColor(new Color(0, 0, 255));
                 health = 1;
                 this.type = "laser";
-        } else if (rand <= 40) {
+        } else if (rand <= 20) {
                 image.setColor(new Color(0, 0, 0));
                 health = 1;
                 this.type = "bomb";
-        } else if (rand <= 60) {
+        } else if (rand <= 30) {
                 image.setColor(new Color(0, 255, 0));
                 health = 2;
                 this.type = "double";
@@ -50,7 +50,7 @@ public class Block extends Actor
         }
         
         if (getY() >= 760) {
-            getWorld().removeObjects(getWorld().getObjects(Block.class));
+            ((Board )getWorld()).lose();
         }
     }
     
@@ -60,7 +60,7 @@ public class Block extends Actor
     public void hit(String DamageType) {
         Board board = (Board) getWorld();
         
-        int damage = ((Board) getWorld()).damage;
+        int damage = board.damage;
         if (DamageType == "Bomb") {
             damage = damage * 3;
         }
@@ -83,6 +83,7 @@ public class Block extends Actor
         
         if (health < 1) {
             getWorld().removeObject(this);
+            board.addGameInfo("destroyed", type);
         }
     }
 }

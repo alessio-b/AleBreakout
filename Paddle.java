@@ -27,14 +27,14 @@ public class Paddle extends Actor
         if (isTouching(Upgrade.class)) {
             Actor upgrade = getOneIntersectingObject(Upgrade.class);
             if( ((Upgrade) upgrade).upgradeType == "laser") {
-                laserTimer += 300;
+                laserTimer += 900;
             }
             getWorld().removeObject(upgrade);
         }
    
         if (laserTimer > 1) {
             laserTimer--;
-            if (laserTimer%30==0) {
+            if (laserTimer%60==0) {
                 Laser laser = new Laser();
                 getWorld().addObject( laser, getX()+20, getY() - 4);
                 Laser laser2 = new Laser();
