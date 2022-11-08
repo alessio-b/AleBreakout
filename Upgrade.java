@@ -24,13 +24,12 @@ public class Upgrade extends Actor
     
     public void act()
     {
-        int tick = ((Board) getWorld()).tick;
-        int speed = ((Board) getWorld()).speed;
+        Board board = ((Board) getWorld());
         
-        setLocation (getX(), getY() + speed*2);
+        setLocation (getX(), getY() + board.blockSpeed*2);
         
-        if (getY() > 760) {
-            getWorld().removeObject(this);
+        if (getY() >= board.getHeight()-1) {
+            board.removeObject(this);
         }
             
     }

@@ -9,18 +9,16 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Laser extends Actor
 {
     private Block block;
-    private GreenfootImage image = getImage();
     public Laser() {
-        image.scale(6,16);
-        setImage(image);
+        setImage("laser.png");
     }
     
     public void act()
     {
         int tick = ((Board) getWorld()).tick;
-        int speed = ((Board) getWorld()).speed;
+        int speed = ((Board) getWorld()).ballSpeed;
         
-        setLocation (getX(), getY() - speed*2);
+        setLocation (getX(), getY() - 8);
         
         Block block = (Block) getOneIntersectingObject(Block.class);
         if (block != null) {

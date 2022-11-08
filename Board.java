@@ -9,54 +9,86 @@ import java.util.HashMap;
  */
 public class Board extends World
 {
-    public int score = 0;
-    public int tick = 1;
-    public int speed = 1; 
+    // Setup Dynamic Game Variables
+    public int tick = 0;
+    public int ballSpeed = 5; 
+    public int blockSpeed = 1;
     public int damage = 1;
     
-    private boolean playing = true;
-    private HashMap<String, Integer> destroyedBlocks = new HashMap<String, Integer>();;
+    // Setup Gameplay & Gameinfo Variables
+    private int lives = 3;
+    private int score = 0;
+    private String playState;
+    private HashMap<String, Integer> destroyedBlocks = new HashMap<String, Integer>();
+    
+    // Setup MidPoints for Text
+    public int MidHeight = getHeight()/2;
+    public int MidWidth = getWidth()/2;
 
-    /**
-     * Konstruktor für Objekte der Klasse Board.
-     * 
-     */
     public Board()
-    {    
-        super(432, 768, 1);
-        setPaintOrder ( Ball.class, Smoke.class );
+    {   
+        // Iinitial Setup
+        super(540, 960, 1);
+        setPaintOrder ( Bomb.class, Ball.class, Smoke.class );
 
-        speed = 1;
-
+        // Set Welcome Screen
+        playState = "Title";
+        String titleText =    "Welcome to AleBreakout\n\nRed = Normal\nGreen = Double\nBlack = Bomb\nBlue = Laser";
+        showText(titleText, MidWidth, MidHeight);
+        
+        Button startButton = new Button("Start", "start");
+        addObject(startButton, MidWidth, MidHeight+250);
+    }
+    
+    public void restartGame() {
+        // Reset Gameplay Variables
+        score = 0;
+        destroyedBlocks = new HashMap<String, Integer>();
+        lives = 3;
+        startGame();
+    }
+    
+    public void startGame(){
+        // Remove Title/End Screen
+        showText("", MidWidth, MidHeight);
+        removeObjects(getObjects(Button.class));
+        
+        // Initial Lives Display
+        for (int i = 1; i<=lives;i++) {
+             
+        }
+        
+        // Create Paddle & Ball
         Paddle paddle = new Paddle();
         addObject ( paddle, getWidth() / 2, getHeight() - 40);
         paddle.newBall();
-        System.out.println("Debug");
+        
+        // Set Game to active
+        playState = "Playing";
     }
 
     public void act() {
-        if (playing) {
+        // If Game is Active
+        if (playState == "Playing") {
+            // Increase Tick Variable (60 ticks/s)
             tick++;
-            if (tick%192==0) {
-                genBlocks();   
+            if (tick%180==0) {
+                // Add Block Row
+                for (int i=0; i<getWidth()/(24*1.5);i++) {
+                    Block block = new Block();
+                    addObject(block, (int)(i*(24*1.5)+(24*0.75)), -1);
+                }  
             }
         }
     }
 
-    public boolean genBlocks() {
-        for (int i=0; i<getWidth()/(16*1.5);i++) {
-            Block block = new Block();
-            int coordx = (int)(i*(16*1.5)+(16*0.75));
-            addObject(block, coordx, -1);
-        }
-        return true;
-    }
-
     public void addScore(int amount) {
+        // Add Score
         score += amount;
     } 
     
     public void addGameInfo(String infoType, String value) {
+        // Collect GameInfo
         switch(infoType){
             case "destroyed":
                 if (destroyedBlocks.containsKey(value)) {
@@ -68,25 +100,35 @@ public class Board extends World
     }
 
     public void lose() {
-        playing = false;
-        removeObjects(getObjects(null));
-        
-        UserInfo userInfo = UserInfo.getMyInfo();
-        if (score > userInfo.getScore()) {
-            userInfo.setScore(score);
+        // Decrease Lives
+        lives--;
+        if (lives < 1) {
+            // Deactivate Game & Remove all Objects
+            playState = "End";
+            removeObjects(getObjects(null));
+            
+            // Get & Set Highscore
+            UserInfo userInfo = UserInfo.getMyInfo();
+            if (score > userInfo.getScore()) {
+                userInfo.setScore(score);
+            }
+    
+            // Set End Screen
+            String endText =    "Highcore: " + Integer.toString(userInfo.getScore())+ "\n" +
+                                "Score: " + Integer.toString(score)+ "\n" +
+                                "\n" + 
+                                "Blocks Destroyed"+ "\n" +
+                                "Normal: " + (destroyedBlocks.containsKey("normal") ? destroyedBlocks.get("normal") : 0) + "\n" +
+                                "Double: " + (destroyedBlocks.containsKey("double") ? destroyedBlocks.get("double") : 0) + "\n" +
+                                "Bombs: " + (destroyedBlocks.containsKey("bomb") ? destroyedBlocks.get("bomb") : 0) + "\n" +
+                                "Laser: " + (destroyedBlocks.containsKey("laser") ? destroyedBlocks.get("laser") : 0) + "\n";
+            showText(endText, MidWidth, MidHeight);
+            
+            Button startButton = new Button("Restart", "restart");
+            addObject(startButton, MidWidth, MidHeight+250);
+        } else {
+            // Create new Ball
+            (getObjects(Paddle.class).get(0)).newBall();
         }
-        
-        int MidHeight = getHeight()/2;
-        int MidWidth = getWidth()/2;
-        String endText =    "Highcore: " + Integer.toString(userInfo.getScore())+ "\n" +
-                            "Score: " + Integer.toString(score)+ "\n" +
-                            "\n" + 
-                            "Blocks Destroyed"+ "\n" +
-                            "Normal: " + (destroyedBlocks.containsKey("normal") ? destroyedBlocks.get("normal") : 0) + "\n" +
-                            "Double: " + (destroyedBlocks.containsKey("double") ? destroyedBlocks.get("double") : 0) + "\n" +
-                            "Bombs: " + (destroyedBlocks.containsKey("bomb") ? destroyedBlocks.get("bomb") : 0) + "\n" +
-                            "Laser: " + (destroyedBlocks.containsKey("laser") ? destroyedBlocks.get("laser") : 0) + "\n"
-                            ;
-        getBackground().drawImage(new GreenfootImage(endText, 24, null, null), MidWidth, MidHeight-16);
     }
 }

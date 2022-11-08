@@ -19,13 +19,13 @@ public class Ball extends Actor
      */
     public Ball() {
         GreenfootImage image = new  GreenfootImage("ball.png");
-        image.scale(16,16);
+        image.scale(20,20);
         setImage(image);
     }
     
     public void act() 
     {
-        int tick = ((Board) getWorld()).tick;
+        Board board = (Board) getWorld();
         if (!stuck) 
         {
             setLocation (getX() + deltaX, getY() + deltaY);;
@@ -38,21 +38,35 @@ public class Ball extends Actor
             if (getY() == 0) {
                 deltaY = -deltaY;
             }
-            if (tick%2==0 && false) {
+            if (board.tick%2==0) {
                 getWorld().addObject ( new Smoke(), getX(), getY());
             }
             
             // Check Blocks
             Block block = (Block) getOneIntersectingObject(Block.class);
             if (block != null) {
-                deltaY = -deltaY;
+                if (Math.abs(block.getX()-getX()) > Math.abs(block.getY()-getY())) {
+                    //System.out.println("X Closer");
+                    if (block.getX() > getX()) {
+                        deltaX = board.ballSpeed*-1;
+                    } else {
+                        deltaX = board.ballSpeed;
+                    }
+                } else {
+                    //System.out.println("X Closer");
+                    if (block.getY() > getY()) {
+                        deltaY = board.ballSpeed*-1;
+                    } else {
+                        deltaY = board.ballSpeed;
+                    }
+                }
                 block.hit();
             }
             
             //Check Out
             if (getY()+1 == getWorld().getHeight()) {
-                (getWorld().getObjects(Paddle.class).get(0)).newBall();
                 getWorld().removeObject(this);
+                board.lose();
             }
         }
     }
@@ -61,7 +75,7 @@ public class Ball extends Actor
     {
         Actor paddle = getOneIntersectingObject(Paddle.class);
         if (paddle != null) {
-            deltaY = -deltaY;
+            deltaY = -1*((Board) getWorld()).ballSpeed;
             int offset = getX() - paddle.getX();
             deltaX = deltaX + (offset/10);
             if (deltaX > 7) {

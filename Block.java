@@ -13,44 +13,41 @@ public class Block extends Actor
     
     public String type;
     private int health;
-    GreenfootImage image = new  GreenfootImage(16, 16);
     
     public Block() {
-        
+        String img;
         int rand = Greenfoot.getRandomNumber(100);
         if (rand <= 5) {
-                image.setColor(new Color(0, 0, 255));
+                img = "blockLaser.png";
                 health = 1;
                 this.type = "laser";
-        } else if (rand <= 20) {
-                image.setColor(new Color(0, 0, 0));
+        } else if (rand <= 15) {
+                img = "blockBomb.png";
                 health = 1;
                 this.type = "bomb";
-        } else if (rand <= 30) {
-                image.setColor(new Color(0, 255, 0));
+        } else if (rand <= 35) {
+                img = "blockDouble.png";
                 health = 2;
                 this.type = "double";
         } else {
-                image.setColor(new Color(255, 0, 0));
+                img = "blockNormal.png";
                 health = 1;
                 this.type = "normal";
         }
         //System.out.println(type);
-        image.drawRect(0, 0, 100, 100);
-        image.fill();
-        setImage(image);
+        setImage(img);
     }
     public void act()
     {
-        int tick = ((Board) getWorld()).tick;
-        int speed = ((Board) getWorld()).speed;
+        Board board = (Board) getWorld();
         
-        if (tick%6 == 0) {
-            setLocation (getX(), getY() + speed);
+        if (board.tick%6 == 0) {
+            setLocation (getX(), getY() + board.blockSpeed);
         }
         
-        if (getY() >= 760) {
-            ((Board )getWorld()).lose();
+        if (getY() >= board.getHeight()-1) {
+            System.out.println("Block Loss");
+            board.lose();
         }
     }
     
@@ -76,10 +73,11 @@ public class Block extends Actor
             getWorld().addObject( upgrade, getX(), getY());
             board.addScore(1);
         } else if (type == "double") {
-            image.setColor(new Color(0, 128, 0));
-            setImage(image);
+            setImage("blockDouble2.png");
             board.addScore(4);
-        } 
+        } else {
+            board.addScore(2);
+        }
         
         if (health < 1) {
             getWorld().removeObject(this);

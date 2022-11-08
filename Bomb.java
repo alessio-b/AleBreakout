@@ -10,32 +10,38 @@ import java.util.List;
 public class Bomb extends Actor
 {
     private int startTick;
-    private GreenfootImage image;
-    
-    public Bomb() {
-        setImage("bomb.png");
-        image = getImage();
-    }
     
     public void act()
     {
         int tick = ((Board) getWorld()).tick;
-        int speed = ((Board) getWorld()).speed;
+        int speed = ((Board) getWorld()).blockSpeed;
         
         if (tick%7== 0) {
             setLocation (getX(), getY() + speed);
         }
-        if ((tick-startTick)%4==0) {
-            image.scale((int)(image.getWidth()*1.1), (int)(image.getHeight()*1.1));
-        }
-        
+
+        getImage().clear();
+        int size = (int)(24*Math.pow(1.02,tick-startTick));
         //System.out.println(tick+" - "+startTick);
-        if (tick-startTick>=48) {
+        if (tick-startTick >= 100) {
+            getWorld().removeObject(this);
+        } else if (tick-startTick >= 90) {
+            setImage("explosion/5.png");
+        } else if (tick-startTick >= 80) {
+            setImage("explosion/4.png");
+        } else if (tick-startTick >= 70) {
+            setImage("explosion/3.png");
             for (Block block: getIntersectingObjects(Block.class)) {
                 block.hit("bomb");
             }
-            getWorld().removeObject(this);
+        } else if (tick-startTick >= 60) {
+            setImage("explosion/2.png");
+        } else if (tick-startTick >= 50) {
+            setImage("explosion/1.png");
+        } else {
+            setImage("bomb.png");
         }
+        getImage().scale(size, size);
     }
     public void setTick() {
         startTick = ((Board) getWorld()).tick;
