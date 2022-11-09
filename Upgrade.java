@@ -1,18 +1,14 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-/**
- * Write a description of class Laser here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class Upgrade extends Actor
 {
-    GreenfootImage image;
+    // Setup UpgradeInfo
+    private GreenfootImage image;
     public String upgradeType;
     
     public Upgrade(String type) {
         upgradeType = type; 
+        // Set Image based on UpgradeType
         switch(upgradeType) {
             case "laser":
                 image = new GreenfootImage("beeper.png");
@@ -26,8 +22,10 @@ public class Upgrade extends Actor
     {
         Board board = ((Board) getWorld());
         
+        // Move Upgrade
         setLocation (getX(), getY() + board.blockSpeed*2);
         
+        // Check if out of Bounce
         if (getY() >= board.getHeight()-1) {
             board.removeObject(this);
         }

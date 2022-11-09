@@ -1,11 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-/**
- * Write a description of class Laser here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class Laser extends Actor
 {
     public void act()
@@ -13,10 +7,8 @@ public class Laser extends Actor
         // Move Laser
         setLocation (getX(), getY() - 8);
         
-        // Create Smoke Trail (every 0.1s)
-        if (((Board) getWorld()).tick%4==0) {
-            getWorld().addObject ( new Smoke(), getX(), getY());
-        }
+        // Create Smoke Trail
+        getWorld().addObject(new Trail(), getX(), getY());
         
         // Check for Block Collision or Out of Bounce
         if (isTouching(Block.class)) {

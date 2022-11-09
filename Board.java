@@ -1,12 +1,6 @@
 import greenfoot.*; 
 import java.util.HashMap;
 
-/**
- * Das Spielbrett. In dem Spiel gibt es einen Schläger, der bewegt werden kann.
- * 
- * @author mik
- * @version 1.0
- */
 public class Board extends World
 {
     // Setup Dynamic Game Variables
@@ -29,7 +23,7 @@ public class Board extends World
     {   
         // Iinitial Setup
         super(540, 960, 1);
-        setPaintOrder ( Bomb.class, Ball.class, Smoke.class );
+        setPaintOrder ( Bomb.class, Ball.class, Trail.class );
 
         // Set Welcome Screen
         playState = "Title";
@@ -54,8 +48,9 @@ public class Board extends World
         removeObjects(getObjects(Button.class));
         
         // Initial Lives Display
-        for (int i = 1; i<=lives;i++) {
-             
+        for (int i = 0; i<lives;i++) {
+             GreenfootImage heart = new GreenfootImage("heart.png");
+             getBackground().drawImage(heart, i*26, getHeight()-heart.getHeight());
         }
         
         // Create Paddle & Ball
@@ -102,6 +97,19 @@ public class Board extends World
     public void lose() {
         // Decrease Lives
         lives--;
+        
+        // Reset Background
+        GreenfootImage bg = new GreenfootImage(540, 960);
+        bg.setColor(Color.WHITE);
+        bg.fill();
+        setBackground(bg);
+        
+        // Initial Lives Display
+        for (int i = 0; i<lives;i++) {
+             GreenfootImage heart = new GreenfootImage("heart.png");
+             getBackground().drawImage(heart, i*26, getHeight()-heart.getHeight());
+        }
+        
         if (lives < 1) {
             // Deactivate Game & Remove all Objects
             playState = "End";
