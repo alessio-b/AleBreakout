@@ -8,25 +8,22 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Laser extends Actor
 {
-    private Block block;
-    public Laser() {
-        setImage("laser.png");
-    }
-    
     public void act()
-    {
-        int tick = ((Board) getWorld()).tick;
-        int speed = ((Board) getWorld()).ballSpeed;
-        
+    {   
+        // Move Laser
         setLocation (getX(), getY() - 8);
         
-        Block block = (Block) getOneIntersectingObject(Block.class);
-        if (block != null) {
+        // Create Smoke Trail (every 0.1s)
+        if (((Board) getWorld()).tick%4==0) {
+            getWorld().addObject ( new Smoke(), getX(), getY());
+        }
+        
+        // Check for Block Collision or Out of Bounce
+        if (isTouching(Block.class)) {
+            Block block = (Block) getOneIntersectingObject(Block.class);
             block.hit();
             getWorld().removeObject(this);
-            return;
-        }
-        if (getY() < 1) {
+        } else if (getY() < 1) {
             getWorld().removeObject(this);
         }
     }

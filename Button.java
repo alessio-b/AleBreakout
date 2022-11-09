@@ -8,28 +8,24 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Button extends Actor
 {
+    // Setup action Variable
     private String action;
-    public GreenfootImage buttonImage;
-    private Board board = (Board) getWorld();
-    
-    private int xPos;
-    private int yPos;
     
     public Button(String buttonText, String actionPar) {
+        // Set action Variable
         action = actionPar;
         
-        buttonImage = new GreenfootImage(buttonText, 24, new Color(255, 255, 255), new Color(0, 0, 0), new Color(128, 128, 128));
+        // Create Image based on Text
+        GreenfootImage buttonImage = new GreenfootImage(buttonText, 24, new Color(255, 255, 255), new Color(0, 0, 0), new Color(128, 128, 128));
         setImage(buttonImage);
-    }
-    
-    public void drawButton() {
-        ((Board) getWorld()).getBackground().drawImage(buttonImage, xPos-buttonImage.getWidth()/2, yPos );
     }
     
     public void act()
     {
         Board board = (Board) getWorld();
+        // Check if mouse clicked Button
         if (Greenfoot.mouseClicked(this)) {
+            // Call Method based on action Variable
             switch(action){
                 case "start":
                     board.startGame();

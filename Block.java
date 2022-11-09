@@ -8,14 +8,13 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Block extends Actor
 {
-    private Bomb bomb;
-    private Upgrade upgrade;
-    
+    // Setup BlockInfo
     public String type;
     private int health;
     
     public Block() {
         String img;
+        // Randomly generate Block Type
         int rand = Greenfoot.getRandomNumber(100);
         if (rand <= 5) {
                 img = "blockLaser.png";
@@ -34,51 +33,59 @@ public class Block extends Actor
                 health = 1;
                 this.type = "normal";
         }
-        //System.out.println(type);
         setImage(img);
     }
     public void act()
     {
         Board board = (Board) getWorld();
-        
+        // Move Block   
         if (board.tick%6 == 0) {
             setLocation (getX(), getY() + board.blockSpeed);
         }
-        
+        // Check for Block out of Bounce
         if (getY() >= board.getHeight()-1) {
             System.out.println("Block Loss");
             board.lose();
         }
     }
     
+    // 
     public void hit () {
         this.hit("");
     }
     public void hit(String DamageType) {
         Board board = (Board) getWorld();
         
+        //set Damage and update BlockHealth
         int damage = board.damage;
         if (DamageType == "Bomb") {
-            damage = damage * 3;
+            damage = board.damage * 3;
         }
         health-=damage;
         
+        // Check BlockType
         if (type == "bomb") {
-            bomb = new Bomb();
+            // Create and set off Bomb / Add Score
+            Bomb bomb = new Bomb();
             getWorld().addObject( bomb, getX(), getY());
-            bomb.setTick();
+            //bomb.setTick();
             board.addScore(1);
         } else if (type == "laser") { 
-            upgrade = new Upgrade("laser");
+            // Create laser type Upgrade / Add Score
+            Upgrade upgrade = new Upgrade("laser");
             getWorld().addObject( upgrade, getX(), getY());
+            // Add Score
             board.addScore(1);
         } else if (type == "double") {
+            // Set "broken" Image / Add Score
             setImage("blockDouble2.png");
             board.addScore(4);
         } else {
+            // Normal Block add Score
             board.addScore(2);
         }
         
+        // Delete if no Health
         if (health < 1) {
             getWorld().removeObject(this);
             board.addGameInfo("destroyed", type);

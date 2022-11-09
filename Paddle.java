@@ -1,39 +1,37 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-/**
- * Der Spielschläger. Er wird über die Tastatur gesteuert (links, rechts, Leertaste). 
- * Er erzeugt außerdem einen neuen Ball, wenn er sich selbst erzeugt.
- * 
- * @author mik
- * @version 1.0
- */
 public class Paddle extends Actor
 {
-    private Ball myBall;  // wird vor dem Ballanschlag verwendet
-    
-    private int BallCount;
+    // Setup
+    private Ball myBall;
     private int laserTimer;
     
     public void act() 
     {
+        // Get Mouse Location and Move
         MouseInfo mouse = Greenfoot.getMouseInfo();
         if (mouse != null) {
             setLocation(mouse.getX(), getY());
+            // Move Ball (if not released)
             if (myBall != null) {
                 myBall.setLocation(mouse.getX(), myBall.getY());
             }
         }
         
+        // Check for Upgrade 
         if (isTouching(Upgrade.class)) {
-            Actor upgrade = getOneIntersectingObject(Upgrade.class);
-            if( ((Upgrade) upgrade).upgradeType == "laser") {
+            Upgrade upgrade = (Upgrade) getOneIntersectingObject(Upgrade.class);
+            // if UpgradeType Laser add to LaserTimer (15s)
+            if(upgrade.upgradeType == "laser") {
                 laserTimer += 900;
             }
             getWorld().removeObject(upgrade);
         }
    
+        // If Laser still active
         if (laserTimer > 1) {
             laserTimer--;
+            // Shoot 2 Lasers (every 1s)
             if (laserTimer%60==0) {
                 Laser laser = new Laser();
                 getWorld().addObject( laser, getX()+20, getY() - 4);
@@ -42,6 +40,7 @@ public class Paddle extends Actor
             }
         }
         
+        // Check for Ball release
         if (myBall != null && Greenfoot.isKeyDown ("space")) {
             myBall.release();
             myBall = null;
@@ -49,9 +48,9 @@ public class Paddle extends Actor
         
     }
     
+    // Create New Ball
     public void newBall()
     {
-        BallCount++;
         myBall = new Ball();
         getWorld().addObject (myBall, getX(), getY()-20);
     }    

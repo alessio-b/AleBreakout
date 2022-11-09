@@ -1,23 +1,16 @@
 import greenfoot.*;
 
-/**
- * Der Spielball. Er bewegt sich und prallt von den Wänden und dem Schläger ab.
- * 
- * @author mik
- * @version 1.0
- */
 public class Ball extends Actor
 {   
-    private int deltaX;         // Geschwindigkeit der x-Bewegung
-    private int deltaY;         // Geschwindigkeit der y-Bewegung
-    private int count = 2;
+    // Setup Movement Variables and Smoke Counter
+    private double deltaX;
+    private double deltaY;
     
-    private boolean stuck = true;   //liegt auf dem Schläger
+    // 
+    private boolean ballReleased = false;
     
-    /**
-     * Aktion. Der Ball bewegt sich, wenn er nicht auf dem Schläger liegt.
-     */
     public Ball() {
+        // Setup Ball and Scale
         GreenfootImage image = new  GreenfootImage("ball.png");
         image.scale(20,20);
         setImage(image);
@@ -26,44 +19,60 @@ public class Ball extends Actor
     public void act() 
     {
         Board board = (Board) getWorld();
-        if (!stuck) 
+        
+        // Check if Ball is released
+        if (ballReleased) 
         {
-            setLocation (getX() + deltaX, getY() + deltaY);;
-            checkPaddle();
+            // Move acording to Movement Variables
+            setLocation (getX() + (int)deltaX, getY() + (int)deltaY);;
             
-            // Check Walls
+            // Check for Paddle / Bounce 
+            if (isTouching(Paddle.class)) {
+                Actor paddle = getOneIntersectingObject(Paddle.class);
+                // Set Vertical Movement
+                deltaY = -1*board.ballSpeed;
+                // Set Horizontal Movement
+                int offset = getX() - paddle.getX();
+                deltaX = deltaX + (offset/6);
+                // Limit Ball Speed
+                while (Math.abs(deltaY+deltaX) > board.ballSpeed*2.5) {
+                    deltaY = deltaY * 0.9;
+                    deltaX = deltaX * 0.9;
+                }
+            }    
+            
+            // Check for Walls / Bounce
             if (getX() == 0 || getX() == getWorld().getWidth()-1) {
                 deltaX = -deltaX;
             }
             if (getY() == 0) {
                 deltaY = -deltaY;
             }
-            if (board.tick%2==0) {
-                getWorld().addObject ( new Smoke(), getX(), getY());
-            }
             
-            // Check Blocks
-            Block block = (Block) getOneIntersectingObject(Block.class);
-            if (block != null) {
+            // Check for BlockCollision
+            if (isTouching(Block.class)) {
+                Block block = (Block) getOneIntersectingObject(Block.class);
+                // Check if Horizontal or Vertical Collision ( DistanceX > DistanceY )
                 if (Math.abs(block.getX()-getX()) > Math.abs(block.getY()-getY())) {
-                    //System.out.println("X Closer");
+                    // Horizontal: Check if Right or Left Collision
                     if (block.getX() > getX()) {
                         deltaX = board.ballSpeed*-1;
                     } else {
                         deltaX = board.ballSpeed;
                     }
                 } else {
-                    //System.out.println("X Closer");
+                    // Vertical: Check if Bottom or Top Collision
                     if (block.getY() > getY()) {
                         deltaY = board.ballSpeed*-1;
                     } else {
                         deltaY = board.ballSpeed;
                     }
                 }
+                // Hit Block
                 block.hit();
             }
             
-            //Check Out
+            //Check if Ball Out
             if (getY()+1 == getWorld().getHeight()) {
                 getWorld().removeObject(this);
                 board.lose();
@@ -71,29 +80,11 @@ public class Ball extends Actor
         }
     }
     
-    private void checkPaddle()
-    {
-        Actor paddle = getOneIntersectingObject(Paddle.class);
-        if (paddle != null) {
-            deltaY = -1*((Board) getWorld()).ballSpeed;
-            int offset = getX() - paddle.getX();
-            deltaX = deltaX + (offset/10);
-            if (deltaX > 7) {
-                deltaX = 7;
-            }
-            if (deltaX < -7) {
-                deltaX = -7;
-            }
-        }            
-    }
-    
-    /**
-     * Löst den Ball vom Schläger.
-     */
+    // Ball Released from Paddle, start Movemen
     public void release()
     {
         deltaX = Greenfoot.getRandomNumber(11) - 5;
         deltaY = -5;
-        stuck = false;
+        ballReleased = true;
     }
 }
