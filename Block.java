@@ -10,15 +10,19 @@ public class Block extends Actor
         String img;
         // Randomly generate Block Type
         int rand = Greenfoot.getRandomNumber(100);
-        if (rand <= 5) {
+        if (rand <= 100) {
+                img = "blockHeart.png";
+                health = 1;
+                this.type = "extraLive";
+        } else if (rand <= 6) {
                 img = "blockLaser.png";
                 health = 1;
                 this.type = "laser";
-        } else if (rand <= 15) {
+        } else if (rand <= 16) {
                 img = "blockBomb.png";
                 health = 1;
                 this.type = "bomb";
-        } else if (rand <= 35) {
+        } else if (rand <= 46) {
                 img = "blockDouble.png";
                 health = 2;
                 this.type = "double";
@@ -38,7 +42,6 @@ public class Block extends Actor
         }
         // Check for Block out of Bounce
         if (getY() >= board.getHeight()-1) {
-            System.out.println("Block Loss");
             board.lose();
         }
     }
@@ -67,6 +70,12 @@ public class Block extends Actor
         } else if (type == "laser") { 
             // Create laser type Upgrade / Add Score
             Upgrade upgrade = new Upgrade("laser");
+            getWorld().addObject( upgrade, getX(), getY());
+            // Add Score
+            board.addScore(1);
+        } else if (type == "extraLive") { 
+            // Create laser type Upgrade / Add Score
+            Upgrade upgrade = new Upgrade("extraLive");
             getWorld().addObject( upgrade, getX(), getY());
             // Add Score
             board.addScore(1);

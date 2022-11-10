@@ -13,6 +13,9 @@ public class Upgrade extends Actor
             case "laser":
                 image = new GreenfootImage("beeper.png");
                 break;
+            case "extraLive":
+                image = new GreenfootImage("extraLive.png");
+                break;
         }
         image.scale(16,16);
         setImage(image);

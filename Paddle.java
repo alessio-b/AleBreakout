@@ -18,12 +18,21 @@ public class Paddle extends Actor
             }
         }
         
+        
+        Board board = ((Board) getWorld());
         // Check for Upgrade 
         if (isTouching(Upgrade.class)) {
             Upgrade upgrade = (Upgrade) getOneIntersectingObject(Upgrade.class);
             // if UpgradeType Laser add to LaserTimer (15s)
-            if(upgrade.upgradeType == "laser") {
-                laserTimer += 900;
+            switch(upgrade.upgradeType) {
+                case "laser":
+                    laserTimer += 900;
+                    board.addGameInfo("collected", upgrade.upgradeType);
+                    break;
+                case "extraLive":
+                    board.addLive();
+                    board.addGameInfo("collected", upgrade.upgradeType);
+                    break;
             }
             getWorld().removeObject(upgrade);
         }

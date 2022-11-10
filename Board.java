@@ -14,6 +14,7 @@ public class Board extends World
     private int score = 0;
     private String playState;
     private HashMap<String, Integer> destroyedBlocks = new HashMap<String, Integer>();
+    private HashMap<String, Integer> collectedUpgrades = new HashMap<String, Integer>();
     
     // Setup MidPoints for Text
     public int MidHeight = getHeight()/2;
@@ -27,7 +28,7 @@ public class Board extends World
 
         // Set Welcome Screen
         playState = "Title";
-        String titleText =    "Welcome to AleBreakout\n\nRed = Normal\nGreen = Double\nBlack = Bomb\nBlue = Laser";
+        String titleText =    "Welcome to AleBreakout\n\nRed = Normal\nGreen = Double\nBlack = Bomb\nBlue = Laser\nYellow = ExtraHeart";
         showText(titleText, MidWidth, MidHeight);
         
         Button startButton = new Button("Start", "start");
@@ -91,6 +92,29 @@ public class Board extends World
                 } else {
                     destroyedBlocks.put(value, 1);
                 }
+                break;
+            case "collected":
+                if (collectedUpgrades.containsKey(value)) {
+                    collectedUpgrades.put(value, collectedUpgrades.get(value)+1);
+                } else {
+                    collectedUpgrades.put(value, 1);
+                }
+                break;
+        }
+    }
+    
+    public void addLive() {
+        lives++;
+        // Reset Background
+        GreenfootImage bg = new GreenfootImage(540, 960);
+        bg.setColor(Color.WHITE);
+        bg.fill();
+        setBackground(bg);
+        
+        // Initial Lives Display
+        for (int i = 0; i<lives;i++) {
+             GreenfootImage heart = new GreenfootImage("heart.png");
+             getBackground().drawImage(heart, i*26, getHeight()-heart.getHeight());
         }
     }
 
@@ -125,11 +149,16 @@ public class Board extends World
             String endText =    "Highcore: " + Integer.toString(userInfo.getScore())+ "\n" +
                                 "Score: " + Integer.toString(score)+ "\n" +
                                 "\n" + 
-                                "Blocks Destroyed"+ "\n" +
+                                "Blocks Destroyed \n" +
                                 "Normal: " + (destroyedBlocks.containsKey("normal") ? destroyedBlocks.get("normal") : 0) + "\n" +
                                 "Double: " + (destroyedBlocks.containsKey("double") ? destroyedBlocks.get("double") : 0) + "\n" +
                                 "Bombs: " + (destroyedBlocks.containsKey("bomb") ? destroyedBlocks.get("bomb") : 0) + "\n" +
-                                "Laser: " + (destroyedBlocks.containsKey("laser") ? destroyedBlocks.get("laser") : 0) + "\n";
+                                "Laser: " + (destroyedBlocks.containsKey("laser") ? destroyedBlocks.get("laser") : 0) + "\n" +
+                                "Hearts: " + (destroyedBlocks.containsKey("extraLive") ? destroyedBlocks.get("extraLive") : 0) + "\n" +
+                                "\n" +
+                                "Collected Upgrades \n" +
+                                "Lives: " + (collectedUpgrades.containsKey("extraLive") ? collectedUpgrades.get("extraLive") : 0) + "\n" +
+                                "Laser: " + (collectedUpgrades.containsKey("laser") ? collectedUpgrades.get("laser") : 0) + "\n";
             showText(endText, MidWidth, MidHeight);
             
             Button startButton = new Button("Restart", "restart");
