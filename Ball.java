@@ -75,7 +75,7 @@ public class Ball extends Actor
             //Check if Ball Out
             if (getY()+1 == getWorld().getHeight()) {
                 getWorld().removeObject(this);
-                board.lose();
+                board.lose("ball");
             }
         }
     }

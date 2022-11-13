@@ -118,9 +118,18 @@ public class Board extends World
         }
     }
 
-    public void lose() {
+    public void lose(String loseType) {
         // Decrease Lives
-        lives--;
+        switch (loseType) {
+            case "block":
+                removeObjects(getObjects(Block.class));
+                removeObjects(getObjects(Ball.class));
+                lives -= 4;
+                break;
+            case "ball":
+                lives -= 1;
+                break;
+        }
         
         // Reset Background
         GreenfootImage bg = new GreenfootImage(540, 960);

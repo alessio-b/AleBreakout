@@ -10,7 +10,7 @@ public class Block extends Actor
         String img;
         // Randomly generate Block Type
         int rand = Greenfoot.getRandomNumber(100);
-        if (rand <= 100) {
+        if (rand <= 1) {
                 img = "blockHeart.png";
                 health = 1;
                 this.type = "extraLive";
@@ -42,7 +42,7 @@ public class Block extends Actor
         }
         // Check for Block out of Bounce
         if (getY() >= board.getHeight()-1) {
-            board.lose();
+            board.lose("block");
         }
     }
     
